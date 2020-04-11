@@ -48,18 +48,18 @@ userSchema.virtual("password")
     .get(function(){
         return this._password
     })
-userSchema.method={
+userSchema.methods={
     authendicate:function(plainpassword){
         return this.securePassword(plainpassword)===this.encry_password
     },
     securePassword:function(plainpassword){
-        if(!password) return "";
+        if (!plainpassword) return "";
         try{
             return crypto.createHmac('sha256', this.salt)
                 .update(plainpassword)
                 .digest('hex');
         }catch(err){
-            return ""
+            return err; 
         }
     }
 }
