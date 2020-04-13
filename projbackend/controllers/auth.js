@@ -80,8 +80,8 @@ exports.isAuthenticated=(req,res,next)=>{
     next();
 }
 exports.isAdmin=(req,res,next)=>{
-    if(req.profile===0){
-        return res.json(403).json({
+    if(req.profile.role===0){
+        return res.status(403).json({
             error:"Access denied"
         })
     }
