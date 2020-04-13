@@ -4,10 +4,6 @@ const jwt=require("jsonwebtoken");
 const exprssJwt=require("express-jwt");
 
 exports.signup=(req,res)=>{
-    // console.log("Req Body", req.body);
-    // res.json({
-    //     message:"User signed in"
-    // })
     const errors=validationResult(req);
     if(!errors.isEmpty()){
         return res.status(422).json({
@@ -38,12 +34,12 @@ exports.signin=(req,res)=>{
         })
     }
     User.findOne({email},(err,user)=>{
-        if(err){
-            return res.json(400).json({
+        if(err || !user){
+            return res.status(400).json({
                 errors:"User does not exits"
             })
         }
-        if(!user.authenticate(password)){
+        if (!user.authenticate(password)){
             return res.status(401).json({
                 errors:"Email and passord does not match"
             })
@@ -51,17 +47,43 @@ exports.signin=(req,res)=>{
 
         const authToken=jwt.sign({_id:user._id},process.env.SECRET);
         
-        res.cookie("token",token,{expire:new Date()+9999});
+        res.cookie("token",authToken,{expire:new Date()+9999});
 
         const {_id,name,email,role}=user;
-        return res.json({token,user:{
+        return res.json({authToken,user:{
             _id,name,email,role
         }})
     })
 }
 
 exports.signout = (req, res) => {
+    res.clearCookie("authToken")
     res.json({
         message: "User signout"
     })
+}
+
+//Protected Routes
+exports.isSignedIn=exprssJwt({
+    secret:process.env.SECRET,
+    userProperty:"auth"
+})
+
+//Custom middleware:-
+exports.isAuthenticated=(req,res,next)=>{
+    let checker=req.profile &&req.auth && req.profile._id==req.auth._id;
+    if(!checker){
+        return res.status(403).json({
+            errors:"Access Denied"
+        })
+    }
+    next();
+}
+exports.isAdmin=(req,res,next)=>{
+    if(req.profile===0){
+        return res.json(403).json({
+            error:"Access denied"
+        })
+    }
+    next();
 }
