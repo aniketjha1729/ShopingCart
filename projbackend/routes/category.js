@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const { getCategoryId, createCategory,
+const{ getCategoryId, createCategory,
         getCategory, getAllCategory,
         updateCategory, deleteCategory
-    }=require("../controllers/category");
-
+     }=require("../controllers/category");
 const {isAdmin,isAuthenticated,isSignedIn}=require("../controllers/auth");
 const {getUserById}=require("../controllers/user");
 
