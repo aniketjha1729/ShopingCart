@@ -2,19 +2,19 @@ import React, { useState } from "react";
 import Base from "../core/Base";
 import { Redirect } from "react-router-dom";
 
-import { signin, authenticate, isAutheticated } from "../auth/helper";
+import { signin, authenticate, isAuthenticated } from "../auth/helper";
 
 const Signin = () => {
   const [values, setValues] = useState({
-    email: "",
-    password: "",
+    email: "shashwat3057@gmail.com",
+    password: "12345",
     error: "",
     loading: false,
     didRedirect: false
   });
-  
+
   const { email, password, error, loading, didRedirect } = values;
-  const { user } = isAutheticated();
+  const { user } = isAuthenticated();
 
   const handleChange = name => event => {
     setValues({ ...values, error: false, [name]: event.target.value });
@@ -51,7 +51,7 @@ const Signin = () => {
         return <p>USer</p>
       }
     }
-    if (isAutheticated()) {
+    if (isAuthenticated()) {
       return <Redirect to="/" />;
     }
   };
