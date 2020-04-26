@@ -1,5 +1,6 @@
 import React,{useState} from 'react'
 import Base from '../core/Base'
+import { Link } from "react-router-dom";
 import { signup } from '../auth/helper';
 
 const Signup = ()=>{
@@ -8,11 +9,12 @@ const Signup = ()=>{
     name: "",
     email: "",
     password: "",
-    error: "",
+    error:"",
     success: false
   });
+
   const { name, email, password, error, success } = values;
-  
+
   const handleChange = name => event => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
@@ -23,6 +25,7 @@ const Signup = ()=>{
     signup({ name, email, password })
       .then(data => {
         if (data.error) {
+          console.log(data.error)
           setValues({ ...values, error: data.error, success: false });
         } else {
           setValues({
@@ -37,7 +40,38 @@ const Signup = ()=>{
       })
       .catch(console.log("Error in signup",error));
   };
- 
+  
+  const successMessage = () => {
+    return (
+      <div className="row">
+        <div className="col-md-6 offset-sm-3 text-left">
+          <div
+            className="alert alert-success"
+            style={{ display: success ? "" : "none" }}
+          >
+            New account was created successfully. Please
+            <Link to="/signin">Login Here</Link>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const errorMessage = () => {
+    return (
+      <div className="row">
+        <div className="col-md-6 offset-sm-3 text-left">
+          <div
+            className="alert alert-danger"
+            style={{ display:error ? "" : "none" }}
+          >
+            {error}
+          </div>
+        </div>
+      </div>
+      //console.log(error)
+    );
+  };
 
   const signUpForm = () => {
       return (
@@ -86,6 +120,8 @@ const Signup = ()=>{
   
   return(
       <Base title="Sign Up Page" description="A page for SignUp">
+      {successMessage()}
+      {errorMessage()}
       {signUpForm()}
       <p className="text-white text-center">{JSON.stringify(values)}</p>
       </Base>

@@ -4,17 +4,17 @@ const jwt=require("jsonwebtoken");
 const exprssJwt=require("express-jwt");
 
 exports.signup=(req,res)=>{
-    const errors=validationResult(req);
-    if(!errors.isEmpty()){
+    const error=validationResult(req);
+    if(!error.isEmpty()){
         return res.status(422).json({
-            errors:errors.array()[0].msg
+            error:error.array()[0].msg
         })
     }
     const user=new User(req.body)
     user.save((err,user)=>{
         if(err){
             return res.status(400).json({
-                err:"Not able to save in db"
+                error:"Email is already in Use"
             })
         }
         res.json({
@@ -24,7 +24,6 @@ exports.signup=(req,res)=>{
         })
     })
 }
-
 exports.signin=(req,res)=>{
     const {email,password}=req.body;
     const errors = validationResult(req);
@@ -50,6 +49,7 @@ exports.signin=(req,res)=>{
         res.cookie("token",authToken,{expire:new Date()+9999});
 
         const {_id,name,email,role}=user;
+        console.log(user);
         return res.json({authToken,user:{
             _id,name,email,role
         }})
