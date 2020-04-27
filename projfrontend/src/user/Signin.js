@@ -27,7 +27,7 @@ const Signin = () => {
       .then(data => {
         if (data.errors) {
           setValues({ ...values, error: data.errors, loading: false });
-          console.log("dta error");
+          // console.log("dta error");
         } else {
           authenticate(data, () => {
             setValues({
@@ -47,16 +47,16 @@ const Signin = () => {
 
   const performRedirect = () => {
     if (didRedirect) {
-      console.log("In DidRedirect");
+      // console.log("In DidRedirect");
       if (user && user.role === 1) {
-        console.log("user and user role")
+        // console.log("user and user role")
         return <Redirect to="/admin/dashboard" />;
       } else {
         return <Redirect to="/user/dashboard" />;
       }
     }
     if (isAuthenticated()) {
-      console.log("In IsAuthenticated");
+      // console.log("In IsAuthenticated");
       return <Redirect to="/"/>;
     }
   };
