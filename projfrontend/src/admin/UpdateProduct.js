@@ -37,11 +37,23 @@ const UpdateProduct = ({match}) => {
                         category:data.category._id,
                         stock:data.stock,
                         formData:new FormData()
+                        
                     })
                     //console.log(categories)
-
+                    preloadCategories();
                 }
                 console.log(data)
+            })
+        }
+        const preloadCategories=()=>{
+            getCatgories().then(data=>{
+                if(data.error){
+                    setValues({ ...values, error: data.error }) 
+                }else{
+                    setValues({
+                        categories:data, formData:new FormData()
+                    })
+                }
             })
         }
 
@@ -52,8 +64,8 @@ const UpdateProduct = ({match}) => {
         const onSubmit = () => {
             event.preventDefault();
             setValues({ ...values, error: "", loading: true })
-            updateProduct(user._id, authToken, formData).then(data => {
-                if (data.error) {
+            updateProduct(match.params.productId,user._id, authToken, formData).then(data => {
+                if (data.errors) {
                     setValues({ ...values, error: data.errors })
                 } else {
                     setValues({
@@ -158,7 +170,7 @@ const UpdateProduct = ({match}) => {
                     onClick={onSubmit}
                     className="btn btn-outline-success mb-3"
                 >
-                    Create Product
+                    Update Product
       </button>
             </form>
         );
