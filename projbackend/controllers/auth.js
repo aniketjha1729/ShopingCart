@@ -49,7 +49,7 @@ exports.signin=(req,res)=>{
         res.cookie("token",authToken,{expire:new Date()+9999});
 
         const {_id,name,email,role}=user;
-        console.log(user);
+        // console.log(user);
         return res.json({authToken,user:{
             _id,name,email,role
         }})

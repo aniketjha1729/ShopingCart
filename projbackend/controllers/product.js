@@ -1,5 +1,5 @@
 const Product =require("../models/product");
-const fromidable=require("formidable");
+const formidable=require("formidable");
 const _=require("lodash")
 const fs=require("fs");
 
@@ -13,30 +13,31 @@ exports.getProductById=(req,res,next,id)=>{
             })
         }
         req.product=product;
+        next();
     })
-    next();
+    
 }
 exports.createProduct=(req,res)=>{
-    let form=new fromidable.IncomingForm();
+    let form=new formidable.IncomingForm();
     form.keepExtensions=true;
     form.parse(req,(err,fields,file)=>{
         if(err){
             return res.status(400).json({
-                error:"Problem with img"
+                errors:"Problem with img"
             })
         }
         //destructing fileds:
         const { name, description, price,category,stock}=fields;
         if(!name||!description||!price||!category||!stock){
             return res.status(400).json({
-                error:"please inlcude all fileds"
+                errors:"please inlcude all fileds"
             })
         }
         let product=new Product(fields);
         if(file.photo){
             if(file.photo.size>300000){
                 return res.status(400).json({
-                    error:"file is to big"
+                    errors:"file is to big"
                 })
             }
             product.photo.data=fs.readFileSync(file.photo.path);
@@ -46,19 +47,18 @@ exports.createProduct=(req,res)=>{
         product.save((err,product)=>{
             if(err){
                 return res.status(400).json({
-                    error:"savinng photo failed"
+                    errors:"savinng photo failed"
                 })
             }
             res.json(product)
         })
     })
 }
-
 exports.getProduct=(req,res)=>{
+    //console.log(req.product)
     req.product.photo=undefined
     return res.json(req.product)
 }
-
 exports.photo=(req,res,next)=>{
     if(req.product.photo.data){
         res.set("Content-Type",req.product.photo.contentType);
@@ -66,7 +66,6 @@ exports.photo=(req,res,next)=>{
     }
     next();
 }
-
 exports.deleteProduct=(req,res)=>{
     const product=req.product;
     product.remove((err,delproduct)=>{
@@ -80,14 +79,13 @@ exports.deleteProduct=(req,res)=>{
         })
     })
 }
-
 exports.updateProduct=(req,res)=>{
-    let form = new fromidable.IncomingForm();
+    let form = new formidable.IncomingForm();
     form.keepExtensions = true;
     form.parse(req, (err, fields, file) => {
         if (err) {
             return res.status(400).json({
-                error: "Problem with img"
+                errors: "Problem with img"
             })
         }
         let product = req.product;
@@ -95,7 +93,7 @@ exports.updateProduct=(req,res)=>{
         if (file.photo) {
             if (file.photo.size > 300000) {
                 return res.status(400).json({
-                    error: "file is to big"
+                    errors: "file is to big"
                 })
             }
             product.photo.data = fs.readFileSync(file.photo.path);
@@ -105,14 +103,13 @@ exports.updateProduct=(req,res)=>{
         product.save((err, product) => {
             if (err) {
                 return res.status(400).json({
-                    error: "updation failed"
+                    errors: "updation failed"
                 })
             }
             res.json(product)
         })
     })
 }
-
 exports.getAllProduct=(req,res)=>{
     let limit = req.query.limit ? parseInt(req.query.limit) : 8;
     let sortBy = req.query.limit ? req.query.limit : "_id";
@@ -123,7 +120,9 @@ exports.getAllProduct=(req,res)=>{
     .sort([[sortBy,"asc"]])
     .exec((err,products)=>{
         if(err){
-            error:"NO produts found"
+            return res.status(404).json({
+                errors:"No Product Found"
+            })
         }
         res.json(products);
     })
@@ -141,7 +140,7 @@ exports.updateStock=(req,res,next)=>{
     Product.bulkWrite(myOperations,{},(err,products)=>{
         if(err){
             return res.status(400).json({
-                error:"Bult Operation Fialed"
+                errors:"Bult Operation Fialed"
             })
         }
         next();
@@ -152,7 +151,7 @@ exports.getAllUniqueCategories=(req,res)=>{
     Product.distinct("categories",{},(err,categories)=>{
         if(err){
             return res.status(400).json({
-                err:"No category found"
+                errors:"No category found"
             })
         }
         res.json(categories)
