@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Base from './Base'
 import Card from './Card'
 import {loadCart} from './helper/cartHelper'
+import Stripe from './Stripe'
 
 const Cart = () => {
     const [products, setProducts] = useState([])
@@ -49,7 +50,10 @@ const Cart = () => {
                     {loadAllProdcuts()}
                 </div>
                 <div className="col-6">
-                    {loadCheckout()}
+                    <Stripe 
+                    products={products}
+                    setReload={setReload}
+                    />
                 </div>
 
             </div>
