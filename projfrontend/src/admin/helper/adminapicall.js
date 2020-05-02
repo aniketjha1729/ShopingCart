@@ -26,6 +26,19 @@ export const getCatgories=()=>{
     })
 }
 
+export const deleteCategory=(categoryId,userId,authToken)=>{
+    return fetch(`${API}/category/${categoryId}/${userId}`,{
+        method:"DELETE",
+        headers:{
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`
+        }
+    }).then(response => {
+        return response.json();
+    })
+        .catch(err => console.log(err));
+}
+
 
 export const createProduct=(userId,authToken,product)=>{
     return fetch(`${API}/product/create/${userId}`,{

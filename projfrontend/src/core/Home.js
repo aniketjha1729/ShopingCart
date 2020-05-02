@@ -1,7 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import "../styles.css";
 import Base from "./Base";
-import {API} from "../backend";
 import Card from './Card';
 import { getProducts } from './helper/coreapicalls';
 
@@ -28,9 +27,9 @@ export default function Home() {
 
     //console.log("API is", API);
     return (
-        <Base title="Home Page" description="Welcome to the Tshirt Store">
+        <Base>
             <div className="row text-center">
-                <h1 className="text-white">All of T-shirts</h1>
+                
                 <div className="row">
                     {products.map((product,index)=>{
                         return(

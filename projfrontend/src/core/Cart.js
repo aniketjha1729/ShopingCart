@@ -3,6 +3,7 @@ import Base from './Base'
 import Card from './Card'
 import {loadCart} from './helper/cartHelper'
 import Stripe from './Stripe'
+//import Payment from './Payment'
 
 const Cart = () => {
     const [products, setProducts] = useState([])
@@ -14,7 +15,7 @@ const Cart = () => {
         setProducts(loadCart())
     }, [reload])
 
-    const loadAllProdcuts = () => {
+    const loadAllProdcuts = (products) => {
         return (
             <div>
                 <h2>This Section is to Load Products</h2>
@@ -33,13 +34,13 @@ const Cart = () => {
             </div>
         )
     }
-    const loadCheckout = () => {
-        return (
-            <div>
-                <h2>This Section is for Chekout</h2>
-            </div>
-        )
-    }
+    // const loadCheckout = () => {
+    //     return (
+    //         <div>
+    //             <h2>This Section is for Chekout</h2>
+    //         </div>
+    //     )
+    // }
 
 
     //console.log("API is", API);
@@ -47,13 +48,17 @@ const Cart = () => {
         <Base title="Cart Page" description="Ready to checkout">
             <div className="row text-center"  >
                 <div className="col-6">
-                    {loadAllProdcuts()}
+                    {products.length > 0 ? loadAllProdcuts(products):(<h3>No Products</h3>)}
                 </div>
                 <div className="col-6">
                     <Stripe 
                     products={products}
                     setReload={setReload}
                     />
+                    {/* <Payment 
+                        products={products}
+                        setReload={setReload}
+                    /> */}
                 </div>
 
             </div>
