@@ -69,7 +69,6 @@ const Signup = ()=>{
           </div>
         </div>
       </div>
-      //console.log(error)
     );
   };
 
